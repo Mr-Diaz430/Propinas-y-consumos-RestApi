@@ -152,7 +152,9 @@ function agregarPlatillo(producto){
         cliente.pedido = [...resultado];
     }
 
+    limpiarHTML();
 
+    // Mostrar Resumen
     actualizarResumen();
 }
 
@@ -162,7 +164,7 @@ function actualizarResumen() {
     const contenido = document.querySelector('#resumen .contenido');
 
     const resumen = document.createElement('DIV');
-    resumen.classList.add('col-md-6');
+    resumen.classList.add('col-md-6', 'card', 'py-5', 'px-3', 'shadow');
 
     
     // Informacion mesa
@@ -184,10 +186,31 @@ function actualizarResumen() {
     horaSpan.textContent = cliente.hora;
     horaSpan.classList.add('fw-normal');
     
-    
     mesa.appendChild(mesaSpan);
     hora.appendChild(horaSpan);
-    contenido.appendChild(mesa);
-    contenido.appendChild(hora);
     
+
+    // Titulo de la sección
+    const heading = document.createElement('H3');
+    heading.textContent = 'Platillos consumidos';
+    heading.classList.add('my-4', 'text-center');
+
+
+    // Iterar pedidos
+
+
+    // Agregar contenido
+    resumen.appendChild(mesa);
+    resumen.appendChild(hora);
+    resumen.appendChild(heading);
+    
+    contenido.appendChild(resumen);
 } 
+
+function limpiarHTML(){
+    const contenido = document.querySelector('#resumen .contenido');
+
+    while (contenido.firstChild) {
+        contenido.removeChild(contenido.firstChild);
+    }
+}
