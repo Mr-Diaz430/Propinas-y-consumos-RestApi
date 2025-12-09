@@ -96,10 +96,10 @@ function mostrarPlatillos(platillos) {
         inputCantidad.id = `producto-${platillo.id}`;
         inputCantidad.classList.add('form-control');
         
-        // si colocamos parentesis en la funcion, esta se ejecutara y no esperara a que ocurra el evento "onchange", si espera en caso de quitar los () pero ya no podremos enviar información.
+        // si colocamos parentesis en la funcion, esta se ejecutara y no esperara a que ocurra el evento "onchange", SI espera en caso de quitar los () pero ya no podremos enviar información.
         /* Ejemplo
-        * se ejecuta: agregarPlatillo(platillo.id)
-        * espera: agregarPlatillo
+        * se ejecuta: agregarPlatillo(platillo.id) X
+        * espera pero sin parametros: agregarPlatillo X
         * solucion (espera y puede enviar parametros): function(){agregarPlatillo(platillo.id)} -> funcion LINEAL
         */
         inputCantidad.onchange = function() {
@@ -146,10 +146,48 @@ function agregarPlatillo(producto){
         }
         
     }else{
+        // Eliminar elemento cuando la cantidad es 0
         console.log('No es mayor que 0');
         const resultado = pedido.filter( articulo => articulo.id !== producto.id);
         cliente.pedido = [...resultado];
     }
 
-    console.log(cliente.pedido);
+
+    actualizarResumen();
 }
+
+
+function actualizarResumen() {
+    console.log('Desde actualizar resumen...');
+    const contenido = document.querySelector('#resumen .contenido');
+
+    const resumen = document.createElement('DIV');
+    resumen.classList.add('col-md-6');
+
+    
+    // Informacion mesa
+    const mesa = document.createElement('P');
+    mesa.textContent = 'Mesa';
+    mesa.classList.add('fw-bold');
+
+    const mesaSpan = document.createElement('SPAN');
+    mesaSpan.textContent = cliente.mesa;
+    mesaSpan.classList.add('fw-normal');
+    
+    
+    // Informacion hora
+    const hora = document.createElement('P');
+    hora.textContent = 'Hora';
+    hora.classList.add('fw-bold');
+    
+    const horaSpan = document.createElement('SPAN');
+    horaSpan.textContent = cliente.hora;
+    horaSpan.classList.add('fw-normal');
+    
+    
+    mesa.appendChild(mesaSpan);
+    hora.appendChild(horaSpan);
+    contenido.appendChild(mesa);
+    contenido.appendChild(hora);
+    
+} 
