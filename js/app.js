@@ -73,12 +73,13 @@ function mostrarPlatillos(platillos) {
     const contenido = document.querySelector('#platillos .contenido');
 
     platillos.forEach(platillo => {
+
         const row = document.createElement('DIV');
         row.classList.add('row', 'py-3', 'border-top');
         
         const nombre = document.createElement('DIV');
         nombre.classList.add('col-md-4');
-        nombre.textContent = platillo.nombre;
+        nombre.textContent = `${platillo.nombre}`;
         
         const precio = document.createElement('DIV');
         precio.classList.add('col-md-3', 'fw-bold');
@@ -209,7 +210,7 @@ function actualizarResumen() {
 
         const nombreEl = document.createElement('H4');
         nombreEl.classList.add('my-4'); 
-        nombreEl.textContent = 'nombre';
+        nombreEl.textContent = nombre;
 
         // Cantidad del articulo
         const cantidadEl = document.createElement('P');
@@ -236,7 +237,7 @@ function actualizarResumen() {
 
         const subTotalValor = document.createElement('SPAN');
         subTotalValor.classList.add('fw-normal');
-        subTotalValor.textContent = precio * cantidad;
+        subTotalValor.textContent = `$${precio * cantidad}`;
 
         // btn Eliminar
         const btnEliminar = document.createElement('BUTTON');
@@ -282,7 +283,6 @@ function limpiarHTML(){
 }
 
 function eliminarProducto(id){
-    console.log('Eliminando...', id);
     const { pedido } = cliente;
     const resultado = pedido.filter( articulo => articulo.id !== id);
     cliente.pedido = [...resultado];
@@ -310,8 +310,6 @@ function mensajePedidoVacio(){
 }
 
 function formularioPropinas(){
-    console.log('PROPINAS....');
-
     const contenido = document.querySelector('#resumen .contenido');
 
     const formulario = document.createElement('DIV');
@@ -330,6 +328,9 @@ function formularioPropinas(){
     radio10.name = 'propina';
     radio10.value = '10';
     radio10.classList.add = ('form-check-input');
+    radio10.onclick = function(){
+        calcularPropina(10);
+    }
 
     const radio10Label = document.createElement('LABEL');
     radio10Label.textContent = '10%';
@@ -347,7 +348,10 @@ function formularioPropinas(){
     radio25.name = 'propina';
     radio25.value = '25';
     radio25.classList.add = ('form-check-input');
-    
+    radio25.onclick = function(){
+        calcularPropina(25);
+    }
+
     const radio25Label = document.createElement('LABEL');
     radio25Label.textContent = '25%';
     radio25Label.classList.add = 'form-check-label';
@@ -364,7 +368,10 @@ function formularioPropinas(){
     radio50.name = 'propina';
     radio50.value = '50';
     radio50.classList.add = ('form-check-input');
-    
+    radio50.onclick = function(){
+        calcularPropina(50)
+    }
+
     const radio50Label = document.createElement('LABEL');
     radio50Label.textContent = '50%';
     radio50Label.classList.add = 'form-check-label';
@@ -383,4 +390,72 @@ function formularioPropinas(){
     formulario.appendChild(divFormulario);
     
     contenido.appendChild(formulario);
+}
+
+
+function calcularPropina(prop){
+    const { pedido } = cliente;
+    let subtotal = 0;
+
+    pedido.forEach( articulo => {
+        subtotal += articulo.cantidad * articulo.precio;
+    });
+
+    const propina = ((subtotal * prop) / 100);
+    
+    const total = (subtotal + propina);
+
+    mostrarTotalHTML(subtotal, total, propina);
+}
+
+function mostrarTotalHTML(subtotal, total, propina){
+
+    const divTotales = document.createElement('DIV');
+    divTotales.classList.add('total-pagar', 'my-5');
+
+    // Subtotal 
+    const subTotalParrafo = document.createElement('P');
+    subTotalParrafo.classList.add('fs-3', 'fw-bold', 'mt-5');
+    subTotalParrafo.textContent = 'Subtotal Consumo: ';
+    
+    const subTotalSpan = document.createElement('SPAN');
+    subTotalSpan.classList.add('fw-normal');
+    subTotalSpan.textContent = `$${subtotal}`;
+
+    subTotalParrafo.appendChild(subTotalSpan);
+
+    // Propina 
+    const propinaParrafo = document.createElement('P');
+    propinaParrafo.classList.add('fs-3', 'fw-bold', 'mt-5');
+    propinaParrafo.textContent = 'Propina: ';
+    
+    const subPropinaSpan = document.createElement('SPAN');
+    subPropinaSpan.classList.add('fw-normal');
+    subPropinaSpan.textContent = `$${propina}`;
+
+    propinaParrafo.appendChild(subPropinaSpan);
+
+    // Total 
+    const totalParrafo = document.createElement('P');
+    totalParrafo.classList.add('fs-3', 'fw-bold', 'mt-5');
+    totalParrafo.textContent = 'Total: ';
+    
+    const totalSpan = document.createElement('SPAN');
+    totalSpan.classList.add('fw-normal');
+    totalSpan.textContent = `$${total}`;
+
+    totalParrafo.appendChild(totalSpan);
+
+    const totalPagarDiv = document.querySelector('.total-pagar');
+    if (totalPagarDiv) {
+        totalPagarDiv.remove();
+    }
+
+    divTotales.appendChild(subTotalParrafo);
+    divTotales.appendChild(propinaParrafo);
+    divTotales.appendChild(totalParrafo);
+
+
+    const formulario = document.querySelector('.formulario > div');
+    formulario.appendChild(divTotales);
 }
